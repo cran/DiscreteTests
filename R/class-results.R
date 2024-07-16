@@ -409,27 +409,42 @@ DiscreteTestResults <- R6Class(
           cat("\n")
 
           if(inputs) {
-            cat("observations:     ")
-            obs_str <- paste(
-              paste0(names(pars$observations), " = ", pars$observations[i, ]),
-              collapse = ", "
-            )
-            cat(
-              strwrap(obs_str, exdent = 18, prefix = "\n", initial = ""),
-              "\n"
-            )
+            # print function with wrapping and indentation for observations,
+            #  parameters and hypotheses
+            print_wrap <- function(alt, str, indent){
+              cat(
+                paste0(alt, paste(rep(" ", indent - nchar(alt)), collapse = "")),
+                strwrap(
+                  x = str,
+                  width = getOption("width") - indent,
+                  exdent = indent,
+                  prefix = "\n",
+                  initial = ""
+                ),
+                "\n",
+                sep = ""
+              )
+            }
 
-            cat("parameters:       ")
-            obs_str <- paste(
+            # print observations
+            str <- paste(
               paste0(
-                names(pars$parameters)[-idx], " = ", pars$parameters[i, -idx]
+                names(pars$observations), " = ", pars$observations[i, ]
               ),
               collapse = ", "
             )
-            cat(
-              strwrap(obs_str, exdent = 18, prefix = "\n", initial = ""),
-              "\n"
-            )
+            print_wrap("observations:", str, 18)
+
+            # print parameters
+            if(ncol(pars$parameters) > 1){
+              str <- paste(
+                paste0(
+                  names(pars$parameters)[-idx], " = ", pars$parameters[i, -idx]
+                ),
+                collapse = ", "
+              )
+              print_wrap("parameters:", str, 18)
+            }
 
             if(pars$parameters[[idx]][i] == "greater") {
               alt <- "greater than"
@@ -441,30 +456,27 @@ DiscreteTestResults <- R6Class(
               alt <- "not equal to"
               null <- "equal to"
             }
-            cat("null hypothesis:  true", names(pars$nullvalues)[1], "is", null,
-                pars$nullvalues[[1]][i], "\n")
-            cat("alternative:      true", names(pars$nullvalues)[1], "is", alt,
-                pars$nullvalues[[1]][i], "\n")
+
+            str <- paste("true", names(pars$nullvalues)[1], "is", null,
+                         pars$nullvalues[[1]][i])
+            print_wrap("null hypothesis:", str, 18)
+
+            str <- paste("true", names(pars$nullvalues)[1], "is", alt,
+                         pars$nullvalues[[1]][i])
+            print_wrap("alternative:", str, 18)
           }
 
           if(pvalues) {
-            if(pars$parameters[[idx]][i] %in% c("greater", "less")) {
-              meth <- switch(
-                pars$parameters[[idx]][i],
-                greater = "upper tail",
-                less = "lower tail"
-              )
-            } else {
-              meth <- switch(
-                pars$parameters[[idx]][i],
-                minlike = "minimum likelihood",
-                blaker  = "combined tails",
-                absdist = "absolute distance from mean",
-                "minimum tail doubling"
-              )
-            }
+            meth <- switch(
+              EXPR    = pars$parameters[[idx]][i],
+              minlike = "(minimum likelihood)",
+              blaker  = "(combined tails)",
+              absdist = "(absolute distance from mean)",
+              central = "(minimum tail doubling)",
+              ""
+            )
             cat("p-value:          ")
-            cat(private$p_values[i], " (", meth, ")\n", sep = "")
+            cat(private$p_values[i], meth, "\n")
           }
 
           if(supports) {
@@ -477,13 +489,12 @@ DiscreteTestResults <- R6Class(
           cat(
             paste(
               "[ print limit reached --", n - limit, "results omitted --",
-              "use print parameter 'limit' for more results ]"
+              "use print parameter 'limit' for more results ]\n"
             )
           )
         if(!is.null(test_idx))
-          cat(paste("[", length(nums), "out of", n, "results printed ]"))
+          cat(paste("[", length(nums), "out of", n, "results printed ]\n"))
       }
-      cat("\n")
 
       self
     }
@@ -492,25 +503,30 @@ DiscreteTestResults <- R6Class(
   ## private ----
 
   private = list(
-    # single character string with the name of the test(s)
+    ## @field test_name          single character string with the name of the
+    ##                           test(s), e.g. "Fisher's Exact Test"
     test_name = character(),
 
-    # named list containing the observations and tests parameters
+    ## @field inputs             named list containing the observations and the
+    ##                           tests' parameters
     inputs = list(),
 
-    # numeric vector of the p-values calculated for each discrete test setting
+    ## @field p_values           numeric vector of the p-values calculated for
+    ##                           each discrete test setting
     p_values = numeric(),
 
-    # list of UNIQUE numeric vectors containing all p-values a discrete test
-    #   setting can produce
+    ## @field pvalue_supports    list of UNIQUE numeric vectors containing all
+    ##                           p-values that can be observed in the respective
+    ##                           discrete test setting
     pvalue_supports = list(),
 
-    # list of numeric vectors containing the test indices that indicate to
-    #   which individual test each unique support belongs
+    ## @field support_indices    list of numeric vectors containing the test
+    ##                           indices that indicate to which individual test
+    ##                           setting each unique support belongs
     support_indices = list(),
 
-    # single character string with the name of the variable that contains the
-    #   observed data
+    ## @field data_name          single character string with the name of the
+    ##                           variable that contains the observed data
     data_name = character()
   )
 )

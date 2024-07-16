@@ -2,8 +2,8 @@ Package: DiscreteTests
 Type: Package
 Title: Vectorised Computation of P-Values and Their Supports for
         Several Discrete Statistical Tests
-Version: 0.1.3
-Date: 2024-06-21
+Version: 0.2.0
+Date: 2024-07-16
 Authors@R: c(
     person("Florian", "Junge", role = c("cre", "aut"),
            email = "diso.fbmn@h-da.de"),
@@ -18,15 +18,15 @@ Description: Provides vectorised functions for computing p-values of various
 License: GPL-3
 Encoding: UTF-8
 Language: en-GB
-Imports: R6, checkmate
+Imports: R6, checkmate, lifecycle
 URL: https://github.com/DISOhda/DiscreteTests
 BugReports: https://github.com/DISOhda/DiscreteTests/issues
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2024-06-21 12:44:10 UTC; fjunge
+Packaged: 2024-07-16 13:03:57 UTC; Florian
 Author: Florian Junge [cre, aut],
   Christina Kihn [aut],
   Sebastian Döhler [ctb]
 Maintainer: Florian Junge <diso.fbmn@h-da.de>
 Repository: CRAN
-Date/Publication: 2024-06-21 13:00:02 UTC
+Date/Publication: 2024-07-16 21:20:06 UTC
