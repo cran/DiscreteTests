@@ -1,3 +1,23 @@
+# DiscreteTests 0.3.0
+
+* Added Wilcoxon's one- and two-sample sign rank tests (new function:
+  `wilcox_test_pv()`).
+* Added Mann-Whitney U test, which is equivalent to Wilcoxon's rank sum test
+  (new function: `mann_whitney_test_pv()`).
+* Added conditional two-sample homogeneity test for binomial experiments, which
+  is special application of Fisher's exact test (new function:
+  `homogenity_test_pv()`).
+* Extensions to `DiscreteTestResults` class to store observations as lists (e.g.
+  to store vectors of different sizes) as well as to include the tests'
+  statistics, the name of the null distribution and details regarding the
+  computation of the *p*-values.
+* Completely re-written `print()` output of test results using the `cli`
+  package.
+* Old non-snake-case functions (`binom.test.pv()`, `fisher.test.pv()`,
+  `mcnemar.test.pv()` and `poisson.test.pv()`) are now defunct and will be
+  removed in a future version.
+  
+
 # DiscreteTests 0.2.1
 
 * `get_pvalues()` method of `DiscreteTestResults` class now includes the (row or
